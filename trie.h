@@ -1,3 +1,15 @@
+/***************************************************************
+# trie.h
+# Header for trie.cpp, defines Trie class and TrieNode structure
+# Copyright (C) 2024 C. Brown (dev@coralesoft.nz)
+# This software is released under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+# Last revised 15/10/2024
+#-----------------------------------------------------------------------
+# Version      Date         Notes:
+# 2024.1.0     15.10.2024   Initial implementation of Trie class
+****************************************************************/
+
 #ifndef TRIE_H
 #define TRIE_H
 

@@ -1,29 +1,26 @@
-
 #include "gridsearch.h"
 #include <vector>
-#include <iostream>
 #include <string>
 #include <set>
 #include <fstream>
 #include <sstream>
-#include <algorithm> // For std::transform
+#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
-GridSearch::GridSearch() {
-    // Constructor (empty)
-}
+// Constructor
+GridSearch::GridSearch() {}
 
-GridSearch::~GridSearch() {
-    // Destructor (empty)
-}
+// Destructor
+GridSearch::~GridSearch() {}
 
 // Define the directions for 8 possible moves in the grid (up, down, left, right, and diagonals)
 int dx[] = {-1, -1, -1, 0, 1, 1, 1, 0};
 int dy[] = {-1, 0, 1, 1, 1, 0, -1, -1};
 
 // DFS function implementation with location tracking, ignore words, and minimum word length
-void GridSearch::dfs(vector<vector<char>>& grid, vector<vector<bool>>& visited, TrieNode* node, int x, int y, string word, vector<string>& result, vector<pair<string, pair<int, int>>>& locations, set<string>& foundWords, const set<string>& ignoreWords, int minWordLength) {
+void GridSearch::dfs(vector<vector<char>>& grid, vector<vector<bool>>& visited, TrieNode* node, int x, int y, string word, vector<string>& result, vector<pair<string, pair<pair<int, int>, pair<int, int>>>>& locations, set<string>& foundWords, const set<string>& ignoreWords, int minWordLength, int startX, int startY, int dirX, int dirY) {
     if (x < 0 || y < 0 || static_cast<size_t>(x) >= grid.size() || static_cast<size_t>(y) >= grid[0].size() || visited[x][y]) {
         return;  // Out of bounds or already visited
     }
@@ -42,32 +39,31 @@ void GridSearch::dfs(vector<vector<char>>& grid, vector<vector<bool>>& visited, 
     if (node->isEndOfWord && foundWords.find(word) == foundWords.end() && ignoreWords.find(word) == ignoreWords.end() && word.length() >= static_cast<size_t>(minWordLength)) {
         // Only add the word if it hasn't been found already, it's not in the ignore list, and it meets the min word length requirement
         result.push_back(word);  // Valid word found
-        locations.push_back({word, {x, y}});  // Track the starting position of the word
+        // Track both the starting and ending positions (1-based indexing)
+        locations.push_back({word, {{startX + 1, startY + 1}, {x + 1, y + 1}}});
         foundWords.insert(word);  // Add the word to the set of found words
     }
 
     visited[x][y] = true;  // Mark cell as visited
 
-    // Explore all 8 possible directions
-    for (int i = 0; i < 8; i++) {
-        int newX = x + dx[i];
-        int newY = y + dy[i];
-        dfs(grid, visited, node, newX, newY, word, result, locations, foundWords, ignoreWords, minWordLength);  // Recursive DFS
-    }
+    // Explore the current direction only
+    dfs(grid, visited, node, x + dirX, y + dirY, word, result, locations, foundWords, ignoreWords, minWordLength, startX, startY, dirX, dirY);
 
     visited[x][y] = false;  // Backtrack
 }
 
 // Main function to search the grid for words in the Trie, with location tracking, ignore words, and minimum word length
-vector<string> GridSearch::searchWords(vector<vector<char>>& grid, Trie* trie, vector<pair<string, pair<int, int>>>& locations, const set<string>& ignoreWords, int minWordLength) {
+vector<string> GridSearch::searchWords(vector<vector<char>>& grid, Trie* trie, vector<pair<string, pair<pair<int, int>, pair<int, int>>>>& locations, const set<string>& ignoreWords, int minWordLength) {
     vector<string> result;
     vector<vector<bool>> visited(grid.size(), vector<bool>(grid[0].size(), false));  // Initialize visited array
     set<string> foundWords;  // Set to track unique found words
 
-    // Start DFS from each cell in the grid
+    // Start DFS from each cell in the grid and explore all 8 directions
     for (size_t i = 0; i < grid.size(); i++) {
         for (size_t j = 0; j < grid[0].size(); j++) {
-            dfs(grid, visited, trie->root, i, j, "", result, locations, foundWords, ignoreWords, minWordLength);
+            for (int d = 0; d < 8; d++) {  // Explore all 8 directions
+                dfs(grid, visited, trie->root, i, j, "", result, locations, foundWords, ignoreWords, minWordLength, i, j, dx[d], dy[d]);
+            }
         }
     }
 

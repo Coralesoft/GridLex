@@ -25,3 +25,32 @@
 	<string>
 	<set>
 
+1728897449 source:/home/colin/Documents/GitHub/word-search/gridsearch.cpp
+	"gridsearch.h"
+	<vector>
+	<string>
+	<set>
+	<fstream>
+	<sstream>
+	<iostream>
+	<algorithm>
+
+1728897307 /home/colin/Documents/GitHub/word-search/gridsearch.h
+	<vector>
+	<string>
+	<set>
+	"trie.h"
+
+1728891588 /home/colin/Documents/GitHub/word-search/trie.h
+	<string>
+
+1728897185 source:/home/colin/Documents/GitHub/word-search/main.cpp
+	"gridsearch.h"
+	"trie.h"
+	<iostream>
+	<vector>
+	<set>
+
+1728891588 source:/home/colin/Documents/GitHub/word-search/trie.cpp
+	"trie.h"
+

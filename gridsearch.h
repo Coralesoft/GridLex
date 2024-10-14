@@ -11,15 +11,15 @@ public:
     GridSearch();
     ~GridSearch();
 
-    // Update dfs declaration to include ignoreWords and minWordLength parameters
-    void dfs(std::vector<std::vector<char>>& grid, std::vector<std::vector<bool>>& visited, TrieNode* node, int x, int y, std::string word, std::vector<std::string>& result, std::vector<std::pair<std::string, std::pair<int, int>>>& locations, std::set<std::string>& foundWords, const std::set<std::string>& ignoreWords, int minWordLength);
+    // Depth-first search (DFS) to find words in the grid
+    void dfs(std::vector<std::vector<char>>& grid, std::vector<std::vector<bool>>& visited, TrieNode* node, int x, int y, std::string word, std::vector<std::string>& result, std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& locations, std::set<std::string>& foundWords, const std::set<std::string>& ignoreWords, int minWordLength, int startX, int startY, int dirX, int dirY);
 
-    // Update searchWords declaration to include ignoreWords and minWordLength parameters
-    std::vector<std::string> searchWords(std::vector<std::vector<char>>& grid, Trie* trie, std::vector<std::pair<std::string, std::pair<int, int>>>& locations, const std::set<std::string>& ignoreWords, int minWordLength);
+    // Search for words in the grid
+    std::vector<std::string> searchWords(std::vector<std::vector<char>>& grid, Trie* trie, std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& locations, const std::set<std::string>& ignoreWords, int minWordLength);
 };
 
-// Declare the CSV-related functions for use in main.cpp
-vector<vector<char>> readCSVFile(const std::string& filename);
+// Functions to read from CSV files
+std::vector<std::vector<char>> readCSVFile(const std::string& filename);
 void loadWordsFromCSVFile(const std::string& filename, Trie& trie);
 std::set<std::string> loadIgnoreWordsFromCSV(const std::string& filename);
 

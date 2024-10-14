@@ -46,16 +46,17 @@ int main(int argc, char* argv[]) {
     // Create a GridSearch object
     GridSearch gridSearch;
 
-    // Vector to store found words and their locations
-    vector<pair<string, pair<int, int>>> wordLocations;
+    // Vector to store found words and their locations (start and end)
+    vector<pair<string, pair<pair<int, int>, pair<int, int>>>> wordLocations;
 
     // Use GridSearch to find all words in the grid that are in the Trie, along with their locations
     vector<string> foundWords = gridSearch.searchWords(grid, &myTrie, wordLocations, ignoreWords, minWordLength);
 
-    // Output the found words and their starting locations
+    // Output the found words and their starting and ending locations
     cout << "Found words and their locations: " << endl;
     for (const auto& entry : wordLocations) {
-        cout << "Word: " << entry.first << " at position (" << entry.second.first << ", " << entry.second.second << ")" << endl;
+        cout << "Word: " << entry.first << " from position (" << entry.second.first.first << ", " << entry.second.first.second
+             << ") to position (" << entry.second.second.first << ", " << entry.second.second.second << ")" << endl;
     }
 
     return 0;

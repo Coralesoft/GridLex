@@ -13,27 +13,35 @@
 #include "trie.h"
 
 // Constructor to initialize the root node of the Trie
-Trie::Trie() {
+Trie::Trie()
+{
     root = new TrieNode();
 }
 
 // Destructor to clean up dynamically allocated memory (TrieNodes)
-Trie::~Trie() {
+Trie::~Trie()
+{
     // You may want to write a recursive function to free all nodes
 }
 
 // Insert a word into the Trie
-void Trie::insert(const string& word) {
+void Trie::insert(const string& word)
+{
     TrieNode* node = root;
-    for (char c : word) {
+    for (char c : word)
+    {
         // Check if the character is an alphabetic letter
-        if (isalpha(c)) {
+        if (isalpha(c))
+        {
             int index = toupper(c) - 'A';  // Convert to uppercase and get index in range 0-25
-            if (node->children[index] == nullptr) {
+            if (node->children[index] == nullptr)
+            {
                 node->children[index] = new TrieNode();
             }
             node = node->children[index];
-        } else {
+        }
+        else
+        {
             // Skip non-alphabetic characters
             continue;
         }
@@ -43,11 +51,14 @@ void Trie::insert(const string& word) {
 
 
 // Search for a complete word in the Trie
-bool Trie::search(const string& word) {
+bool Trie::search(const string& word)
+{
     TrieNode* node = root;
-    for (char c : word) {
+    for (char c : word)
+    {
         int index = c - 'a';
-        if (node->children[index] == nullptr) {
+        if (node->children[index] == nullptr)
+        {
             return false;  // Word not found
         }
         node = node->children[index];
@@ -56,11 +67,14 @@ bool Trie::search(const string& word) {
 }
 
 // Search for a prefix in the Trie
-bool Trie::startsWith(const string& prefix) {
+bool Trie::startsWith(const string& prefix)
+{
     TrieNode* node = root;
-    for (char c : prefix) {
+    for (char c : prefix)
+    {
         int index = c - 'a';
-        if (node->children[index] == nullptr) {
+        if (node->children[index] == nullptr)
+        {
             return false;  // Prefix not found
         }
         node = node->children[index];

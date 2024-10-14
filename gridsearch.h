@@ -18,7 +18,8 @@
 #include <set>
 #include "trie.h"
 
-class GridSearch {
+class GridSearch
+{
 public:
     GridSearch();
     ~GridSearch();

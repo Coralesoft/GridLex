@@ -17,13 +17,16 @@
 using namespace std;
 
 // TrieNode class definition (this can also be a struct if you prefer)
-class TrieNode {
+class TrieNode
+{
 public:
     TrieNode* children[26];  // Pointers to child nodes for each alphabet letter
     bool isEndOfWord;
 
-    TrieNode() {
-        for (int i = 0; i < 26; i++) {
+    TrieNode()
+    {
+        for (int i = 0; i < 26; i++)
+        {
             children[i] = nullptr;
         }
         isEndOfWord = false;
@@ -31,7 +34,8 @@ public:
 };
 
 // Trie class definition
-class Trie {
+class Trie
+{
 public:
     Trie();            // Constructor
     virtual ~Trie();   // Destructor

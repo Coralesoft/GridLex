@@ -1,3 +1,15 @@
+/***************************************************************
+# gridsearch.cpp
+# Code implementing DFS-based grid search with Trie for word finding
+# Copyright (C) 2024 C. Brown (dev@coralesoft.nz)
+# This software is released under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+# Last revised 15/10/2024
+#-----------------------------------------------------------------------
+# Version      Date         Notes:
+# 2024.1.0     15.10.2024   Initial implementation of grid search using DFS
+****************************************************************/
+
 #include "gridsearch.h"
 #include <vector>
 #include <string>

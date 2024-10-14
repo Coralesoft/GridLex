@@ -1,3 +1,15 @@
+/***************************************************************
+# main.cpp
+# Main file for word search program, manages input/output and initiates search
+# Copyright (C) 2024 C. Brown (dev@coralesoft.nz)
+# This software is released under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+# Last revised 15/10/2024
+#-----------------------------------------------------------------------
+# Version      Date         Notes:
+# 2024.1.0     15.10.2024   Initial version, integrates grid search and trie
+****************************************************************/
+
 #include "gridsearch.h"
 #include "trie.h"
 #include <iostream>

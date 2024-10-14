@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1728889738 source:/home/colin/Documents/wordfind/wordfind/main.cpp
+	"gridsearch.h"
+	"trie.h"
+	<iostream>
+	<vector>
+	<set>
+
+1728882985 /home/colin/Documents/wordfind/wordfind/trie.h
+	<string>
+
+1728889841 /home/colin/Documents/wordfind/wordfind/gridsearch.h
+	<vector>
+	<string>
+	<set>
+	"trie.h"
+
+1728885474 source:/home/colin/Documents/wordfind/wordfind/trie.cpp
+	"trie.h"
+
+1728889737 source:/home/colin/Documents/wordfind/wordfind/gridsearch.cpp
+	"gridsearch.h"
+	<vector>
+	<iostream>
+	<string>
+	<set>
+

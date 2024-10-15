@@ -4,12 +4,12 @@
 # Copyright (C) 2024 C. Brown (dev@coralesoft.nz)
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for the full license text.
-# Last revised 15/10/2024
+# Last revised 16/10/2024
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
-# 2024.1.0     15.10.2024   Initial implementation of grid search using DFS
+# 2024.10.1    15.10.2024   Initial implementation of grid search using DFS
+# 2024.10.2    16.10.2024   Fix NaN problem 
 ****************************************************************/
-
 #include "gridsearch.h"
 #include <vector>
 #include <string>
@@ -18,6 +18,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <cctype> 
 
 using namespace std;
 
@@ -42,16 +43,17 @@ void GridSearch::dfs(vector<vector<char>>& grid, vector<vector<bool>>& visited, 
     char c = grid[x][y];
     int index = toupper(c) - 'A';  // Ensure the character is uppercase
 
-    if (node->children[index] == nullptr)
+    // Add index bounds check to ensure valid alphabetic character
+    if (index < 0 || index >= 26 || node->children[index] == nullptr)
     {
-        return;  // No further path in the Trie for this character
+        return;  // No further path in the Trie for this character or invalid index
     }
 
     word += c;  // Append the character to the current word
     node = node->children[index];  // Move to the next Trie node
 
     // Check if the word is in ignoreWords and if its length meets the minimum requirement
-    if (node->isEndOfWord && foundWords.find(word) == foundWords.end() && ignoreWords.find(word) == ignoreWords.end() && word.length() >= static_cast<size_t>(minWordLength))
+    if (node != nullptr && node->isEndOfWord && foundWords.find(word) == foundWords.end() && ignoreWords.find(word) == ignoreWords.end() && word.length() >= static_cast<size_t>(minWordLength))
     {
         // Only add the word if it hasn't been found already, it's not in the ignore list, and it meets the min word length requirement
         result.push_back(word);  // Valid word found
@@ -128,7 +130,7 @@ vector<vector<char>> readCSVFile(const string& filename)
     return grid;
 }
 
-// Function to load the words from the CSV file into the Trie
+// Function to load the words from the CSV file into the Trie, while ignoring NaN values
 void loadWordsFromCSVFile(const string& filename, Trie& trie)
 {
     ifstream file(filename);
@@ -147,7 +149,8 @@ void loadWordsFromCSVFile(const string& filename, Trie& trie)
 
         while (getline(ss, word, ','))
         {
-            if (!word.empty() && word.length() >= 3)    // Check for minimum length of 3
+            // Check if the word is not empty, not NaN, and meets minimum length of 3
+            if (!word.empty() && word != "NaN" && word.length() >= 3)
             {
                 transform(word.begin(), word.end(), word.begin(), ::toupper);
                 trie.insert(word);
@@ -158,7 +161,7 @@ void loadWordsFromCSVFile(const string& filename, Trie& trie)
     file.close();
 }
 
-// Function to load ignore words from the CSV file into a set
+// Function to load ignore words from the CSV file into a set, while ignoring NaN values
 set<string> loadIgnoreWordsFromCSV(const string& filename)
 {
     set<string> ignoreWords;
@@ -178,7 +181,8 @@ set<string> loadIgnoreWordsFromCSV(const string& filename)
 
         while (getline(ss, word, ','))
         {
-            if (!word.empty())
+            // Check if the word is not empty and is alphabetic, and ignore NaN or empty entries
+            if (!word.empty() && word != "NaN" && isalpha(word[0]))
             {
                 transform(word.begin(), word.end(), word.begin(), ::toupper);
                 ignoreWords.insert(word);

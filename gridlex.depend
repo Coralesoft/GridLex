@@ -54,3 +54,33 @@
 1728891588 source:/home/colin/Documents/GitHub/word-search/trie.cpp
 	"trie.h"
 
+1729030258 source:c:\dev\gridlex\gridsearch.cpp
+	"gridsearch.h"
+	<vector>
+	<string>
+	<set>
+	<fstream>
+	<sstream>
+	<iostream>
+	<algorithm>
+	<cctype>
+
+1729030258 c:\dev\gridlex\gridsearch.h
+	<vector>
+	<string>
+	<set>
+	"trie.h"
+
+1729030258 c:\dev\gridlex\trie.h
+	<string>
+
+1729030258 source:c:\dev\gridlex\main.cpp
+	"gridsearch.h"
+	"trie.h"
+	<iostream>
+	<vector>
+	<set>
+
+1729030258 source:c:\dev\gridlex\trie.cpp
+	"trie.h"
+

@@ -10,8 +10,8 @@
 # Last revised 16/10/2024
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
-# 2024.10.0     15.10.2024   Initial implementation of Trie class
-# 2024.10.1     16.10.2024   Added recursive destructor to free all nodes
+# 2024.10.0    15.10.2024   Initial implementation of Trie class
+# 2024.10.1    16.10.2024   Added recursive destructor to free all nodes
 ****************************************************************/
 
 #ifndef TRIE_H
@@ -20,7 +20,7 @@
 #include <string>
 using namespace std;
 
-// TrieNode class definition (this can also be a struct if you prefer)
+// TrieNode class definition
 class TrieNode
 {
 public:
@@ -42,7 +42,7 @@ class Trie
 {
 public:
     Trie();            // Constructor
-    virtual ~Trie();   // Destructor
+    virtual ~Trie();   // Destructor that recursively frees all nodes
 
     void insert(const string& word);  // Insert word into Trie
     bool search(const string& word);  // Search for complete word in Trie

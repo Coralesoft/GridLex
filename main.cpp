@@ -8,9 +8,9 @@
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
 # 2024.10.1    15.10.2024   Initial version, integrates grid search and trie
-# 2024.10.2    16.10.2024   Fix NaN problem
-# 2024.10.3    16.10.2024   Remove all spaces from loaded words and ignore list
-# 2024.10.4    16.10.2024   Added Switches to simplyfy options
+# 2024.10.2    16.10.2024   Fixed NaN issue in CSV word loading
+# 2024.10.3    16.10.2024   Removed all spaces from loaded words and ignore list
+# 2024.10.4    16.10.2024   Added switches for ignore words file and minimum word length
 ****************************************************************/
 
 #include "gridsearch.h"
@@ -23,7 +23,7 @@
 
 using namespace std;
 
-// Function to display help information
+// Function to display help information, showing available command-line options.
 void displayHelp()
 {
     cout << "Usage: ./program <csv_grid_file> <csv_words_file> [options]\n"
@@ -36,7 +36,7 @@ void displayHelp()
 
 int main(int argc, char* argv[])
 {
-    // Check if the help flag is present
+    // Parse command-line arguments to check for help flag, ignore words file, and minimum word length
     for (int i = 1; i < argc; ++i)
     {
         if (strcmp(argv[i], "-h") == 0)  // If -h flag is found, display help and exit
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     set<string> ignoreWords;  // Set to store ignore words (initially empty)
     int minWordLength = 3;    // Default minimum word length
 
-    // Parse additional optional arguments
+    // Parse additional optional arguments for ignore file and minimum word length
     for (int i = 3; i < argc; ++i)
     {
         if (strcmp(argv[i], "-i") == 0)  // Check for ignore words file switch
@@ -105,10 +105,10 @@ int main(int argc, char* argv[])
     // Create and initialize a Trie
     Trie myTrie;
 
-    // Load the words from the CSV dictionary file into the Trie
+    // Load the words into the Trie from the specified CSV file
     loadWordsFromCSVFile(wordsFileName, myTrie);
 
-    // Read the CSV file and populate the grid
+    // Populate the grid with characters from the CSV grid file
     vector<vector<char>> grid = readCSVFile(csvFileName);
 
     // Check if the grid was successfully loaded
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
     // Use GridSearch to find all words in the grid that are in the Trie, along with their locations
     vector<string> foundWords = gridSearch.searchWords(grid, &myTrie, wordLocations, ignoreWords, minWordLength);
 
-    // Output the found words and their starting and ending locations
+    // Output the found words and their start and end positions in the grid
     cout << "Found words and their locations: " << endl;
     for (const auto& entry : wordLocations)
     {

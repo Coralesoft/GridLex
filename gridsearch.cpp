@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
 # 2024.10.1    15.10.2024   Initial implementation of grid search using DFS
-# 2024.10.2    16.10.2024   Fix NaN problem
+# 2024.10.2    16.10.2024   Fix NaN problem in CSV word loading
 # 2024.10.3    16.10.2024   Remove all spaces from loaded words and ignore list
 ****************************************************************/
 #include "gridsearch.h"
@@ -59,7 +59,7 @@ void GridSearch::dfs(vector<vector<char>>& grid, vector<vector<bool>>& visited, 
         // Only add the word if it hasn't been found already, it's not in the ignore list, and it meets the min word length requirement
         result.push_back(word);  // Valid word found
         // Track both the starting and ending positions (1-based indexing)
-        locations.push_back({word, {{startX + 1, startY + 1}, {x + 1, y + 1}}});
+        locations.push_back({word, {{startX + 1, startY + 1}, {x + 1, y + 1}}});  // Use 1-based coordinates for positions
         foundWords.insert(word);  // Add the word to the set of found words
     }
 

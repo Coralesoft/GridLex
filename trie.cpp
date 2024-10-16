@@ -7,9 +7,9 @@
 # Last revised 16/10/2024
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
-# 2024.10.0     15.10.2024   Initial implementation of Trie class
-# 2024.10.1     16.10.2024   Added recursive destructor to free all nodes,
-#                           fixed case-sensitivity in search and startsWith.
+# 2024.10.0    15.10.2024   Initial implementation of Trie class
+# 2024.10.1    16.10.2024   Added recursive destructor to free all nodes,
+#                           handled case-insensitive search and prefix lookup.
 ****************************************************************/
 
 #include "trie.h"
@@ -24,21 +24,21 @@ Trie::Trie()
 // Destructor to clean up dynamically allocated memory (TrieNodes)
 Trie::~Trie()
 {
-    clearTrie(root);  // Call a recursive function to delete nodes
+    clearTrie(root);  // Call a recursive function to delete nodes and free memory
 }
 
-// Recursive function to delete all nodes in the Trie
+// Recursive function to delete all nodes in the Trie to prevent memory leaks
 void Trie::clearTrie(TrieNode* node)
 {
     if (node == nullptr) return;
     for (int i = 0; i < 26; ++i)
     {
-        clearTrie(node->children[i]);  // Recursively delete children
+        clearTrie(node->children[i]);  // Recursively delete child nodes
     }
     delete node;  // Delete the current node
 }
 
-// Insert a word into the Trie
+// Insert a word into the Trie, skipping non-alphabetic characters
 void Trie::insert(const string& word)
 {
     TrieNode* node = root;
@@ -60,17 +60,17 @@ void Trie::insert(const string& word)
             continue;
         }
     }
-    node->isEndOfWord = true;
+    node->isEndOfWord = true;  // Mark the end of the word
 }
 
-// Search for a complete word in the Trie
+// Search for a complete word in the Trie, handling both upper and lowercase input
 bool Trie::search(const string& word)
 {
     TrieNode* node = root;
     for (char c : word)
     {
         if (!isalpha(c)) continue;  // Skip non-alphabetic characters
-        int index = toupper(c) - 'A';  // Convert to uppercase
+        int index = toupper(c) - 'A';  // Convert to uppercase to handle case-insensitive search
         if (index < 0 || index >= 26 || node->children[index] == nullptr)
         {
             return false;  // Word not found
@@ -80,14 +80,14 @@ bool Trie::search(const string& word)
     return node != nullptr && node->isEndOfWord;  // True if end of word is reached
 }
 
-// Search for a prefix in the Trie
+// Search for a prefix in the Trie, handling both upper and lowercase input
 bool Trie::startsWith(const string& prefix)
 {
     TrieNode* node = root;
     for (char c : prefix)
     {
         if (!isalpha(c)) continue;  // Skip non-alphabetic characters
-        int index = toupper(c) - 'A';  // Convert to uppercase
+        int index = toupper(c) - 'A';  // Convert to uppercase to handle case-insensitive search
         if (index < 0 || index >= 26 || node->children[index] == nullptr)
         {
             return false;  // Prefix not found

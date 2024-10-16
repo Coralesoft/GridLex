@@ -1,7 +1,7 @@
 
 # GridLex
 
-GridLex is a lightning-fast word search tool designed for grids of letters. With its powerful Depth-First Search (DFS) algorithm and Trie-based word lookup, GridLex efficiently hunts down valid words in any direction—up, down, sideways, or diagonal. Perfect for word puzzle enthusiasts, game developers, or anyone working with word grids.
+GridLex is a lightning-fast word search tool designed for grids of letters. With its powerful Depth-First Search (DFS) algorithm and Trie-based word lookup, GridLex efficiently hunts down valid words in any direction up, down, sideways, or diagonal. Perfect for word puzzle enthusiasts, game developers, or anyone working with word grids.
 
 ## Details
 

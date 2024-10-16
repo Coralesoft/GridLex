@@ -8,7 +8,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '29 13 * * 4'
+    - cron: '29 13 * * 4'  # Adjust cron schedule as needed
 
 jobs:
   analyze:
@@ -53,17 +53,18 @@ jobs:
       with:
         category: "/language:${{ matrix.language }}"
 
-    # Debug: Print directory to find SARIF file
-    - name: List directories to find SARIF
+    # Manually convert the BQRS results to SARIF
+    - name: Convert BQRS to SARIF
       run: |
-        echo "Listing contents of temp directory:"
-        ls -R /home/runner/work/_temp/
-        echo "Listing contents of CodeQL database:"
-        ls -R ${{ runner.temp }}/codeql-database-${{ matrix.language }}
+        codeql database analyze \
+          --format=sarif-latest \
+          --output=${{ runner.temp }}/codeql-results-${{ matrix.language }}.sarif \
+          ${{ runner.temp }}/codeql_databases/${{ matrix.language }} \
+          --rerun
 
     # Upload the SARIF report as an artifact (optional but useful for external review)
     - name: Upload SARIF Report
       uses: actions/upload-artifact@v4
       with:
         name: codeql-report-${{ matrix.language }}
-        path: ${{ runner.temp }}/codeql-database-${{ matrix.language }}/results.sarif
+        path: ${{ runner.temp }}/codeql-results-${{ matrix.language }}.sarif

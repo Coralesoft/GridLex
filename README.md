@@ -14,7 +14,7 @@ This repository contains a word search application that searches for words in a 
 - **CSV Input:** Load the grid of characters and words from CSV files.
 - **Ignore Words:** Support for specifying a set of words to ignore.
 - **Minimum Word Length:** Option to define the minimum length of valid words.
-- **NaN Handling:** Automatically skips invalid "NaN" values in CSV input.
+- **Invalid Data Handling:** Automatically skips any missing or invalid entries in the CSV input.
 - **Space Removal:** Removes spaces from the loaded words and ignore lists for cleaner processing.
 - **Command-Line Switches:** Simplified options for input and program control.
 

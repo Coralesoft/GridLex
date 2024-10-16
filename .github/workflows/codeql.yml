@@ -53,16 +53,16 @@ jobs:
       with:
         category: "/language:${{ matrix.language }}"
 
-    # Manually convert the BQRS results to SARIF
+    # Convert BQRS to SARIF with CodeQL CLI
     - name: Convert BQRS to SARIF
       run: |
-        codeql database analyze \
+        /opt/hostedtoolcache/CodeQL/2.19.1/x64/codeql/codeql database analyze \
           --format=sarif-latest \
           --output=${{ runner.temp }}/codeql-results-${{ matrix.language }}.sarif \
           ${{ runner.temp }}/codeql_databases/${{ matrix.language }} \
           --rerun
 
-    # Upload the SARIF report as an artifact (optional but useful for external review)
+    # Upload SARIF report
     - name: Upload SARIF Report
       uses: actions/upload-artifact@v4
       with:

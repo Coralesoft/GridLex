@@ -5,7 +5,7 @@ GridLex is a lightning-fast word search tool designed for grids of letters. With
 
 ## Details
 
-This repository contains a word search application that searches for words in a grid of characters. The application uses a depth-first search (DFS) algorithm and a Trie data structure to efficiently find words in the grid. The words are loaded from a CSV file, and the application supports ignoring specific words, removing spaces, fixing invalid values like NaN, and setting a minimum word length for valid words.
+This repository contains a word search application that searches for words in a grid of characters. The application uses a depth-first search (DFS) algorithm and a Trie data structure to efficiently find words in the grid. The words are loaded from a CSV file, and the application supports ignoring specific words, removing spaces, fixing invalid values, and setting a minimum word length for valid words.
 
 ## Features
 

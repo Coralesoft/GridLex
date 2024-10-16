@@ -8,7 +8,8 @@
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
 # 2024.10.1    15.10.2024   Initial implementation of grid search using DFS
-# 2024.10.2    16.10.2024   Fix NaN problem 
+# 2024.10.2    16.10.2024   Fix NaN problem
+# 2024.10.3    16.10.2024   Remove all spaces from loaded words and ignore list
 ****************************************************************/
 #include "gridsearch.h"
 #include <vector>
@@ -18,7 +19,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include <cctype> 
+#include <cctype>
 
 using namespace std;
 
@@ -92,6 +93,21 @@ vector<string> GridSearch::searchWords(vector<vector<char>>& grid, Trie* trie, v
     return result;  // Return all unique found words
 }
 
+// Helper function to remove all spaces from a string
+string removeAllSpaces(const string& str)
+{
+    string result;
+    // Copy all characters that are not spaces
+    for (char c : str)
+    {
+        if (!isspace(c))
+        {
+            result += c;
+        }
+    }
+    return result;
+}
+
 // Function to read the grid from a CSV file
 vector<vector<char>> readCSVFile(const string& filename)
 {
@@ -130,7 +146,7 @@ vector<vector<char>> readCSVFile(const string& filename)
     return grid;
 }
 
-// Function to load the words from the CSV file into the Trie, while ignoring NaN values
+// Function to load the words from the CSV file into the Trie, while ignoring NaN values and removing spaces
 void loadWordsFromCSVFile(const string& filename, Trie& trie)
 {
     ifstream file(filename);
@@ -149,6 +165,9 @@ void loadWordsFromCSVFile(const string& filename, Trie& trie)
 
         while (getline(ss, word, ','))
         {
+            // Remove all spaces from the word
+            word = removeAllSpaces(word);
+
             // Check if the word is not empty, not NaN, and meets minimum length of 3
             if (!word.empty() && word != "NaN" && word.length() >= 3)
             {
@@ -161,7 +180,7 @@ void loadWordsFromCSVFile(const string& filename, Trie& trie)
     file.close();
 }
 
-// Function to load ignore words from the CSV file into a set, while ignoring NaN values
+// Function to load ignore words from the CSV file into a set, while ignoring NaN values and removing spaces
 set<string> loadIgnoreWordsFromCSV(const string& filename)
 {
     set<string> ignoreWords;
@@ -181,6 +200,9 @@ set<string> loadIgnoreWordsFromCSV(const string& filename)
 
         while (getline(ss, word, ','))
         {
+            // Remove all spaces from the word
+            word = removeAllSpaces(word);
+
             // Check if the word is not empty and is alphabetic, and ignore NaN or empty entries
             if (!word.empty() && word != "NaN" && isalpha(word[0]))
             {

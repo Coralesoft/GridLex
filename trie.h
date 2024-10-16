@@ -1,6 +1,3 @@
-#ifndef HEADER_A7C0B97D41D176A4
-#define HEADER_A7C0B97D41D176A4
-
 /***************************************************************
 # trie.h
 # Header for trie.cpp, defines Trie class and TrieNode structure
@@ -55,5 +52,4 @@ private:
 };
 
 #endif // TRIE_H
-#endif // header guard 
 

@@ -27,10 +27,8 @@ jobs:
           - os: ubuntu-latest
             cpp_compiler: clang++
         exclude:
-          - os: windows-latest
-            cpp_compiler: g++
-          - os: windows-latest
-            cpp_compiler: clang++
+          - os: ubuntu-latest
+            cpp_compiler: cl # Exclude cl from Linux
 
     steps:
     - name: Checkout repository
@@ -42,12 +40,22 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Configure CMake (Linux and Windows)
+    - name: Configure CMake (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         cmake -B ${{ steps.strings.outputs.build-output-dir }} \
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
         -S ${{ github.workspace }}
+
+    - name: Configure CMake (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+        cmake -B ${{ steps.strings.outputs.build-output-dir }} ^
+        -DCMAKE_CXX_COMPILER=cl ^
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ^
+        -S %GITHUB_WORKSPACE%
 
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}

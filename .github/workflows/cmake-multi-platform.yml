@@ -1,7 +1,7 @@
 # This workflow is for a CMake project running on multiple platforms: Windows and Ubuntu.
-# It builds with GCC, Clang, and MSVC compilers.
+# It builds with GCC, Clang, and MSVC compilers, and uses static linking.
 
-name: CMake on multiple platforms
+name: CMake on multiple platforms (static linking)
 
 on:
   push:
@@ -20,21 +20,16 @@ jobs:
         build_type: [Release]
         include:
           - os: windows-latest
-            c_compiler: cl
             cpp_compiler: cl
           - os: ubuntu-latest
-            c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
-            c_compiler: clang
             cpp_compiler: clang++
         exclude:
           - os: windows-latest
-            c_compiler: gcc
+            cpp_compiler: g++
           - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
+            cpp_compiler: clang++
 
     steps:
     - name: Checkout repository
@@ -50,7 +45,6 @@ jobs:
       run: |
         cmake -B ${{ steps.strings.outputs.build-output-dir }} \
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
         -S ${{ github.workspace }}
 

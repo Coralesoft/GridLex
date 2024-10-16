@@ -1,5 +1,4 @@
 # CodeQL workflow for scanning C++ (c-cpp) code
-# You can modify this workflow to scan other languages and customize queries
 
 name: "CodeQL Advanced"
 
@@ -9,7 +8,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '35 21 * * 2'  # Adjust this if you want to change the schedule (this is for Tuesdays at 21:35 UTC)
+    - cron: '35 21 * * 2'
 
 jobs:
   analyze:
@@ -28,21 +27,17 @@ jobs:
       matrix:
         include:
         - language: c-cpp
-          build-mode: autobuild  # You can change this to 'manual' if you prefer manual build steps
-        # Add more languages if needed: 'javascript-typescript', 'java-kotlin', 'python', etc.
+          build-mode: autobuild
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # Update to latest stable version
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4  # Update to CodeQL v4
+      uses: github/codeql-action/init@v3  # Use the correct v3 version
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # Optionally specify custom queries here
-        # Prefix with "+" to use these queries in addition to those in a config file
-        # queries: security-extended,security-and-quality
 
     - if: matrix.build-mode == 'manual'
       shell: bash
@@ -54,6 +49,6 @@ jobs:
         exit 1
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4  # Update to CodeQL v4
+      uses: github/codeql-action/analyze@v3  # Use the correct v3 version
       with:
         category: "/language:${{ matrix.language }}"

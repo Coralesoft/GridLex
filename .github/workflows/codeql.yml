@@ -1,5 +1,4 @@
 # CodeQL workflow for scanning C++ (c-cpp) code
-# Automatically scans for security issues using CodeQL.
 
 name: "CodeQL Advanced"
 
@@ -9,7 +8,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '29 13 * * 4'  # Adjust cron schedule as needed
+    - cron: '29 13 * * 4'
 
 jobs:
   analyze:
@@ -28,7 +27,6 @@ jobs:
         include:
         - language: c-cpp
           build-mode: autobuild
-        # Add more languages if needed (e.g., javascript-typescript, python, etc.)
 
     steps:
     - name: Checkout repository
@@ -40,8 +38,6 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # Uncomment the following to add custom queries
-        # queries: security-extended,security-and-quality
 
     # If autobuild fails or a manual build is required, include the following build commands
     - if: matrix.build-mode == 'manual'
@@ -56,6 +52,14 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{ matrix.language }}"
+
+    # Debug: Print directory to find SARIF file
+    - name: List directories to find SARIF
+      run: |
+        echo "Listing contents of temp directory:"
+        ls -R /home/runner/work/_temp/
+        echo "Listing contents of CodeQL database:"
+        ls -R ${{ runner.temp }}/codeql-database-${{ matrix.language }}
 
     # Upload the SARIF report as an artifact (optional but useful for external review)
     - name: Upload SARIF Report

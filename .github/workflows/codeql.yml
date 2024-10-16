@@ -1,5 +1,6 @@
 # CodeQL workflow for scanning C++ (c-cpp) code
 
+
 name: "CodeQL Advanced"
 
 on:

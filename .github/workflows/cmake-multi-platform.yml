@@ -60,19 +60,30 @@ jobs:
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Test
+    - name: Test (Linux)
+      if: matrix.os == 'ubuntu-latest'
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      shell: bash
       run: |
         if [ -f "./GridLex" ]; then
           ./GridLex ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
-        elif [ -f "./GridLex.exe" ]; then
-          ./GridLex.exe ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
         else
           echo "No executable found!"
         fi
 
+    - name: Test (Windows)
+      if: matrix.os == 'windows-latest'
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      shell: pwsh
+      run: |
+        if (Test-Path "./GridLex.exe") {
+          ./GridLex.exe ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
+        } else {
+          Write-Host "No executable found!"
+        }
+
     - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: ${{ steps.strings.outputs.build-output-dir }}

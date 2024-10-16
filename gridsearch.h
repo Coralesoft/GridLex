@@ -1,6 +1,3 @@
-#ifndef HEADER_AEA786E94F229B
-#define HEADER_AEA786E94F229B
-
 /***************************************************************
 # gridsearch.h
 # Header for gridsearch.cpp, defines GridSearch class and related functions
@@ -45,5 +42,4 @@ void loadWordsFromCSVFile(const std::string& filename, Trie& trie);
 std::set<std::string> loadIgnoreWordsFromCSV(const std::string& filename);
 
 #endif // GRIDSEARCH_H
-#endif // header guard
 

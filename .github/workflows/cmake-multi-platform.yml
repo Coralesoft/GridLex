@@ -1,0 +1,89 @@
+# This workflow is for a CMake project running on multiple platforms: Windows and Ubuntu.
+# It builds with GCC, Clang, and MSVC compilers, and uses static linking.
+
+name: CMake on multiple platforms (static linking)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Release]
+        cpp_compiler: [g++, clang++, cl]
+        include:
+          - os: windows-latest
+            cpp_compiler: cl
+          - os: ubuntu-latest
+            cpp_compiler: g++
+          - os: ubuntu-latest
+            cpp_compiler: clang++
+        exclude:
+          - os: ubuntu-latest
+            cpp_compiler: cl # Exclude cl from Linux
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        cmake -B ${{ steps.strings.outputs.build-output-dir }} \
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+        -S ${{ github.workspace }}
+
+    - name: Configure CMake (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+        cmake -B ${{ steps.strings.outputs.build-output-dir }} ^
+        -DCMAKE_CXX_COMPILER=cl ^
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ^
+        -S %GITHUB_WORKSPACE%
+
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    - name: Test (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      shell: bash
+      run: |
+        if [ -f "./GridLex" ]; then
+          ./GridLex ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
+        else
+          echo "No executable found!"
+        fi
+
+    - name: Test (Windows)
+      if: matrix.os == 'windows-latest'
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      shell: pwsh
+      run: |
+        if (Test-Path "./GridLex.exe") {
+          ./GridLex.exe ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
+        } else {
+          Write-Host "No executable found!"
+        }
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ matrix.os }}-${{ matrix.cpp_compiler }}
+        path: ${{ steps.strings.outputs.build-output-dir }}

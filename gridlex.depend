@@ -65,21 +65,23 @@
 	<algorithm>
 	<cctype>
 
-1729060956 c:\dev\gridlex\gridsearch.h
+1729075543 c:\dev\gridlex\gridsearch.h
 	<vector>
 	<string>
 	<set>
 	"trie.h"
 
-1729030258 c:\dev\gridlex\trie.h
+1729121348 c:\dev\gridlex\trie.h
 	<string>
 
-1729030258 source:c:\dev\gridlex\main.cpp
+1729075467 source:c:\dev\gridlex\main.cpp
 	"gridsearch.h"
 	"trie.h"
 	<iostream>
 	<vector>
 	<set>
+	<stdexcept>
+	<cstring>
 
 1729030258 source:c:\dev\gridlex\trie.cpp
 	"trie.h"

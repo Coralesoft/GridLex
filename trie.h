@@ -1,13 +1,17 @@
+#ifndef HEADER_A7C0B97D41D176A4
+#define HEADER_A7C0B97D41D176A4
+
 /***************************************************************
 # trie.h
 # Header for trie.cpp, defines Trie class and TrieNode structure
 # Copyright (C) 2024 C. Brown (dev@coralesoft.nz)
 # This software is released under the MIT License.
 # See the LICENSE file in the project root for the full license text.
-# Last revised 15/10/2024
+# Last revised 16/10/2024
 #-----------------------------------------------------------------------
 # Version      Date         Notes:
-# 2024.1.0     15.10.2024   Initial implementation of Trie class
+# 2024.10.0     15.10.2024   Initial implementation of Trie class
+# 2024.10.1     16.10.2024   Added recursive destructor to free all nodes
 ****************************************************************/
 
 #ifndef TRIE_H
@@ -47,7 +51,9 @@ public:
     TrieNode* root;  // Make the root public so it can be accessed by GridSearch
 
 private:
-    // Additional private methods or members can be added here if needed
+    void clearTrie(TrieNode* node);  // Helper function for recursive node deletion
 };
 
 #endif // TRIE_H
+#endif // header guard 
+

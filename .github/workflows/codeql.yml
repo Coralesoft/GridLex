@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ main ]
   schedule:
     - cron: '0 1 * * *'  # Schedule daily at 1am UTC
@@ -12,7 +11,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform }}
     permissions:
       actions: read
       contents: read
@@ -21,27 +20,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp' ] # Specify the language for analysis
-        platform: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ] # Run on multiple platforms
+        language: [ 'cpp' ] 
+        platform: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ] 
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # Updated to use Node.js 20
+      uses: actions/checkout@v4  # Updated to latest checkout action
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: ${{ matrix.language }}  # Remove invalid packs
+        languages: ${{ matrix.language }}
 
-    - name: Install dependencies
-      run: |
-        if [[ "${{ matrix.platform }}" == "ubuntu-latest" ]]; then
-          sudo apt-get install -y cmake build-essential
-        elif [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
-          choco install cmake
-        elif [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
-          brew install cmake
-        fi
+    - name: Install dependencies for Linux
+      if: matrix.platform == 'ubuntu-latest'
+      run: sudo apt-get install -y cmake build-essential
+
+    - name: Install dependencies for Windows
+      if: matrix.platform == 'windows-latest'
+      run: choco install cmake
+
+    - name: Install dependencies for macOS
+      if: matrix.platform == 'macos-latest'
+      run: brew install cmake
 
     - name: Build the code
       run: |
@@ -50,11 +51,11 @@ jobs:
 
     - name: Create CodeQL Database
       run: |
-        /opt/hostedtoolcache/CodeQL/2.19.1/x64/codeql/codeql database create /home/runner/work/_temp/codeql_databases/cpp --language=cpp --command="cmake --build build"
-      
+        codeql database create /home/runner/work/_temp/codeql_databases/cpp --language=cpp --command="cmake --build build"
+
     - name: Perform CodeQL Analysis
       run: |
-        /opt/hostedtoolcache/CodeQL/2.19.1/x64/codeql/codeql database analyze /home/runner/work/_temp/codeql_databases/cpp --format=sarifv2 --output=codeql-results.sarif
+        codeql database analyze /home/runner/work/_temp/codeql_databases/cpp --format=sarifv2 --output=codeql-results.sarif
 
     - name: Upload SARIF results
       uses: actions/upload-artifact@v3

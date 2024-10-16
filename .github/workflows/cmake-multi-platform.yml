@@ -65,9 +65,9 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
         if [ -f "./GridLex" ]; then
-          ./GridLex
+          ./GridLex ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
         elif [ -f "./GridLex.exe" ]; then
-          ./GridLex.exe
+          ./GridLex.exe ../test_case/word_search_grid.csv ../test_case/search_words.csv ../test_case/ignore_words.csv 3
         else
           echo "No executable found!"
         fi

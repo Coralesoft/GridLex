@@ -1,70 +1,69 @@
-# CodeQL workflow for scanning C++ (c-cpp) code
-
-name: "CodeQL Advanced"
+name: "CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
   schedule:
-    - cron: '29 13 * * 4'  # Adjust cron schedule as needed
+    - cron: '0 1 * * *'  # Schedule daily at 1am UTC
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    
+    name: Analyze
+    runs-on: ubuntu-latest
     permissions:
-      security-events: write
-      packages: read
       actions: read
       contents: read
+      security-events: write
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-        - language: c-cpp
-          build-mode: autobuild
+        language: [ 'cpp' ] # Specify the language for analysis
+        platform: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ] # Run on multiple platforms if required
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+        packs: security-and-quality # You can add custom packs here
 
-    # If autobuild fails or a manual build is required, include the following build commands
-    - if: matrix.build-mode == 'manual'
-      shell: bash
+    - name: Install dependencies
       run: |
-        echo 'Manual build mode: replace this with your build steps'
-        echo '  Example: make bootstrap && make release'
-        exit 1
+        if [[ "${{ matrix.platform }}" == "ubuntu-latest" ]]; then
+          sudo apt-get install -y cmake build-essential
+        elif [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
+          choco install cmake
+        elif [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
+          brew install cmake
+        fi
 
-    # Run the CodeQL analysis
+    - name: Build the code
+      run: |
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --config Release
+
+    - name: Create CodeQL Database
+      run: |
+        /opt/hostedtoolcache/CodeQL/2.19.1/x64/codeql/codeql database create /home/runner/work/_temp/codeql_databases/cpp --language=cpp --command="cmake --build build"
+      
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{ matrix.language }}"
-
-    # Convert BQRS to SARIF with CodeQL CLI
-    - name: Convert BQRS to SARIF
       run: |
-        /opt/hostedtoolcache/CodeQL/2.19.1/x64/codeql/codeql database analyze \
-          --format=sarif-latest \
-          --output=${{ runner.temp }}/codeql-results-${{ matrix.language }}.sarif \
-          ${{ runner.temp }}/codeql_databases/${{ matrix.language }} \
-          --rerun
+        /opt/hostedtoolcache/CodeQL/2.19.1/x64/codeql/codeql database analyze /home/runner/work/_temp/codeql_databases/cpp --format=sarifv2 --output=codeql-results.sarif
 
-    # Upload SARIF report
-    - name: Upload SARIF Report
-      uses: actions/upload-artifact@v4
+    - name: Upload SARIF results
+      uses: actions/upload-artifact@v3
       with:
-        name: codeql-report-${{ matrix.language }}
-        path: ${{ runner.temp }}/codeql-results-${{ matrix.language }}.sarif
+        name: codeql-sarif
+        path: codeql-results.sarif
+
+    - name: Upload SARIF results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: codeql-results.sarif
